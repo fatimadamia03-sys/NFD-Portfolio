@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<!-- The <html> tag is the root of the document. lang="en" ensures screen readers know it's English -->
+<html lang="en">
+<head>
+    <!-- Standard character encoding to support all text characters -->
+    <meta charset="UTF-8">
+    <!-- Ensures the website scales correctly on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- The title seen in the browser tab -->
+    <title>NFD Portfolio</title>
+
+    <!-- Importing an elegant Serif font for headings to match Image 3 and 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           CSS VARIABLES (Color Palette from Image 5)
+           ========================================================================== */
+        :root {
+            --color-creme: #EEE4DA;     /* Main background - light and airy */
+            --color-sand: #D8C4AC;      /* Card/Section background - soft contrast */
+            --color-dusty-pink: #C8A49F;/* Hover states and soft accents */
+            --color-burgundy: #4D0E13;  /* Main text, headings, and buttons - strong contrast */
+            
+            /* Typography Variables */
+            --font-heading: 'Playfair Display', serif; /* Elegant, editorial look */
+            --font-body: 'Lato', sans-serif;           /* Clean, readable body text */
+            
+            /* Structural Variables */
+            --border-radius: 30px; /* Highly rounded corners for sections (Pic 1 vibe) */
+            --pill-radius: 50px;   /* Pill-shaped buttons (Pic 3 vibe) */
+            --transition: 0.3s ease-in-out;
+        }
+
+        /* Dark Theme Variables (JS Feature 1 swaps to these) */
+        [data-theme="dark"] {
+            --color-creme: #2A2421;     /* Dark warm brown background */
+            --color-sand: #3E3530;      /* Darker sand for cards */
+            --color-dusty-pink: #695250;/* Muted pink for accents */
+            --color-burgundy: #EEE4DA;  /* Creme text for dark mode readability */
+        }
+
+        /* ==========================================================================
+           GLOBAL RESET & TYPOGRAPHY
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; /* Padding won't affect element width */
+        }
+
+        html {
+            scroll-behavior: smooth; /* Smooth scrolling when clicking nav links */
+        }
+
+        body {
+            background-color: var(--color-creme);
+            color: var(--color-burgundy);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            transition: background-color var(--transition), color var(--transition);
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        h1, h2, h3, h4, .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+        }
+
+        /* ==========================================================================
+           LAYOUT & CONTAINERS
+           ========================================================================== */
+        /* A centered wrapper for content */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Block sections inspired by Image 1 (Rounded dark/sand boxes on a main background) */
+        .block-section {
+            background-color: var(--color-sand);
+            border-radius: var(--border-radius);
+            padding: 4rem;
+            margin: 3rem auto; /* Spacing between blocks */
+            box-shadow: 0 10px 30px rgba(77, 14, 19, 0.05); /* Very soft shadow */
+            transition: transform var(--transition), background-color var(--transition);
+        }
+
+        /* Elements that animate in on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           NAVIGATION (Image 6 Style - Clean, Sticky, Minimal)
+           ========================================================================== */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(238, 228, 218, 0.9); /* Transparent Creme */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            z-index: 1000;
+            padding: 1.5rem 0;
+            transition: background-color var(--transition);
+        }
+
+        [data-theme="dark"] header {
+            background-color: rgba(42, 36, 33, 0.9);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: var(--color-burgundy);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-burgundy);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            transition: color var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--color-dusty-pink);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--color-burgundy);
+        }
+
+        .mobile-menu-btn {
+            display: none; /* Hidden on desktop */
+        }
+
+        /* ==========================================================================
+           BUTTONS & HERO SECTION
+           ========================================================================== */
+        /* Pill-shaped buttons from Image 3 */
+        .btn {
+            display: inline-block;
+            background-color: var(--color-burgundy);
+            color: var(--color-creme);
+            padding: 0.8rem 2.5rem;
+            border-radius: var(--pill-radius);
+            text-decoration: none;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--color-burgundy);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .btn:hover {
+            background-color: transparent;
+            color: var(--color-burgundy);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 80px; /* Offset for header */
+        }
+
+        .hero h1 {
+            font-size: 5vw; /* Scales with screen width */
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            font-style: italic;
+        }
+
+        /* Typing cursor styling */
+        .typing-cursor {
+            border-right: 2px solid var(--color-burgundy);
+            animation: blink 0.75s step-end infinite;
+        }
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        /* ==========================================================================
+           SECTION CONTENT (About, Projects, Contact)
+           ========================================================================== */
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Editorial split layout for About me */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .image-placeholder {
+            background-color: var(--color-dusty-pink);
+            border-radius: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-burgundy);
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            /* Simulating a polaroid/image border effect */
+            border: 10px solid var(--color-creme); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden; /* ADDED: This ensures the image doesn't spill outside the rounded corners */
+        }
+
+        /* ADDED: New style for your actual image */
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* CRITICAL: This makes the image fill the space without squishing or stretching! */
+        }
+
+        /* Filter buttons for projects */
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--color-burgundy);
+            color: var(--color-burgundy);
+            padding: 0.5rem 1.5rem;
+            border-radius: var(--pill-radius);
+            cursor: pointer;
+            font-family: var(--font-body);
+            transition: all var(--transition);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--color-burgundy);
+            color: var(--color-creme);
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background-color: var(--color-creme);
+            border-radius: 15px;
+            padding: 1.5rem;
+            /* Removed the transition and hover transform to keep it static and simple */
+        }
+
+        .project-card h3 {
+            margin: 1rem 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+
+        .project-card p {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-dusty-pink);
+            font-weight: 700;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: var(--pill-radius);
+            border: 1px solid var(--color-dusty-pink);
+            background-color: var(--color-creme);
+            color: var(--color-burgundy);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        textarea.form-input {
+            border-radius: 20px; /* Textareas can't be pills easily */
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-input:focus {
+            border-color: var(--color-burgundy);
+        }
+
+        .form-message {
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--pill-radius);
+            display: none; /* Hidden until JS triggers it */
+        }
+
+        /* ==========================================================================
+           FOOTER & RESPONSIVE DESIGN
+           ========================================================================== */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            color: var(--color-burgundy);
+            opacity: 0.8;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--color-burgundy);
+            color: var(--color-creme);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition);
+            z-index: 99;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mobile Breakpoints */
+        @media (max-width: 800px) {
+            .mobile-menu-btn { display: block; }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%; /* Hide off-screen */
+                width: 250px;
+                height: 100vh;
+                background-color: var(--color-sand);
+                flex-direction: column;
+                align-items: center;
+                padding-top: 3rem;
+                transition: right var(--transition);
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                right: 0; /* Slide in */
+            }
+
+            .about-grid { grid-template-columns: 1fr; }
+            
+            .block-section {
+                padding: 2rem;
+                border-radius: 20px;
+            }
+
+            .hero h1 { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <nav aria-label="Main Navigation">
+            <a href="#home" class="logo">NurFatimaDamia.</a>
+            
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#projects" class="nav-link">Work</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            
+            <div class="controls">
+                <!-- Theme Toggle Button -->
+                <button class="icon-btn" id="theme-btn" aria-label="Toggle Dark Mode">☾</button>
+                <!-- Mobile Menu Button -->
+                <button class="icon-btn mobile-menu-btn" id="mobile-btn" aria-label="Open Menu">☰</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section id="home" class="hero container">
+            <div class="reveal">
+                <h1>Hi, I'm <br> <span id="typing-text"></span><span class="typing-cursor"></span></h1>
+                <p>Degree in Multimedia Computing at Universiti Malaysia Sarawak (UNIMAS)</p>
+                <a href="#projects" class="btn">Explore My Work</a>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION (Floating Container like Image 1) -->
+        <section id="about" class="container reveal">
+            <div class="block-section">
+                <h2 class="section-title">About Me</h2>
+                <div class="about-grid">
+                    <div class="image-placeholder">
+                        <!-- ADDED: Replaced the text with your image tag -->
+                        <img src="images/my portrait.jpeg" alt="Portrait of me" class="profile-img">
+                    </div>
+                    <div>
+                        <h3 style="font-size: 2rem; margin-bottom: 1rem;">Dedicated & Passionate.</h3>
+                        <p style="margin-bottom: 1rem;">A dedicated and creative person with a strong foundation in UI/UX design, front-end development, and content creation. Passionate about designing intuitive web and mobile interfaces, crafting promotional visuals, and exploring emerging technologies in AI and Augmented Reality (AR). Proven experience in system analysis and digital media management, eager to leverage technical and creative skills in a fast-paced environment.</p>
+                        <p style="margin-bottom: 2rem;">I love to challenge my limits by taking on new projects and participating in clubs. I'm ready to embrace new knowledge and experiences to produce a better version of myself and my community.</p>
+                        <a href="#contact" class="btn">Work With Me</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS SECTION (Floating Container) -->
+        <section id="projects" class="container reveal">
+            <div class="block-section">
+                <h2 class="section-title">Experience & Projects</h2>
+                
+                <!-- Filter Buttons -->
+                <div class="filter-nav">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="experience">Experience</button>
+                    <button class="filter-btn" data-filter="leadership">Leadership</button>
+                    <button class="filter-btn" data-filter="skills">Skills</button>
+                </div>
+
+                <!-- Projects Grid containing 5 minimal project cards -->
+                <div class="projects-grid">
+                    
+                    <article class="project-card" data-category="experience">
+                        <img src="images/sdec.jpeg" alt="Description" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>Internship at Sarawak Digital Economy Corporation (SDEC)</h3>
+                        <h4>System Analyst</h4>
+                        <p>Modernized document management system, conducted QA testing, and authored user training manuals.</p>
+                        <span class="tag">Experience</span>
+                    </article>
+
+                    <article class="project-card" data-category="experience">
+                        <img src="images/hwc.jpeg" alt="Description" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>Barista & Service Crew</h3>
+                        <h4>HWC Coffee & Sushi King</h4>
+                        <p>Delivered customer service in fast-paced environments, developing strong problem-solving skills.</p>
+                        <span class="tag">Experience</span>
+                    </article>
+
+                    <article class="project-card" data-category="leadership">
+                        <img src="images/experience 5.jpeg" alt="Description" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>Media & Publications Unit</h3>
+                        <h4>College Allamanda Sports Club, UNIMAS</h4>
+                        <p>Designed promotional posters via Canva and managed social media visuals and engagement.</p>
+                        <span class="tag">Leadership</span>
+                    </article>
+
+                    <article class="project-card" data-category="skills">
+                        <div style="height: 150px; background: var(--color-dusty-pink); border-radius: 10px;"></div>
+                        <h3>UI/UX & Graphic Design</h3>
+                        <p>Proficient in Figma, Wireframing, Canva, Visual Branding, and Android Studio for mobile app development.</p>
+                        <span class="tag">Skills</span>
+                    </article>
+
+                    <article class="project-card" data-category="skills">
+                        <div style="height: 150px; background: var(--color-dusty-pink); border-radius: 10px;"></div>
+                        <h3>Development & Emerging Tech</h3>
+                        <p>Experienced in HTML, CSS, JavaScript, Java, MySQL, plus Photography, Cinematography, and AI/AR Concepts.</p>
+                        <span class="tag">Skills</span>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION (Floating Container) -->
+        <section id="contact" class="container reveal">
+            <div class="block-section">
+                <h2 class="section-title">Inquire</h2>
+                <p style="text-align: center; margin-bottom: 2rem;">
+                    <strong>Outlook:</strong> damiafatima@outlook.com <br>
+                    <strong>Email:</strong> fatimadamia03@gmail.com <br>
+                    <strong>Phone:</strong> +6011-16096721 <br>
+                    <strong>Location:</strong> 93400 Kuching, Sarawak, Malaysia
+                </p>
+                <form id="inquiry-form" class="contact-form" novalidate>
+                    <input type="text" id="name" class="form-input" placeholder="Your Name" required>
+                    <input type="email" id="email" class="form-input" placeholder="Your Email Address" required>
+                    <textarea id="message" class="form-input" placeholder="How can we collaborate?" required></textarea>
+                    <button type="submit" class="btn" style="width: 100%;">Send Inquiry</button>
+                </form>
+                <div id="form-msg" class="form-message"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year"></span> TMT3693 Web Application Development</p>
+    </footer>
+
+    <!-- Back to top arrow -->
+    <a href="#home" class="back-to-top" id="back-to-top" aria-label="Back to top">↑</a>
+
+
+    <!-- ==========================================================================
+         JAVASCRIPT FEATURES (10 Total as per requirement)
+         ========================================================================== -->
+    <script>
+        // Use strict mode for better error catching
+        "use strict";
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* 1. THEME TOGGLE (Dark/Light Mode) */
+            const setupTheme = () => {
+                const themeBtn = document.getElementById('theme-btn');
+                const root = document.documentElement;
+                
+                // Check if user has a saved preference
+                if(localStorage.getItem('portfolioTheme') === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                    themeBtn.innerText = '☀';
+                }
+
+                themeBtn.addEventListener('click', () => {
+                    if (root.getAttribute('data-theme') === 'dark') {
+                        root.removeAttribute('data-theme');
+                        localStorage.setItem('portfolioTheme', 'light');
+                        themeBtn.innerText = '☾'; // Moon icon for light mode
+                    } else {
+                        root.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('portfolioTheme', 'dark');
+                        themeBtn.innerText = '☀'; // Sun icon for dark mode
+                    }
+                });
+            };
+
+            /* 2. MOBILE MENU TOGGLE */
+            const setupMobileMenu = () => {
+                const mobileBtn = document.getElementById('mobile-btn');
+                const navLinks = document.getElementById('nav-links');
+                const navItems = document.querySelectorAll('.nav-link');
+
+                // Toggle menu open/close
+                mobileBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+
+                // Close menu when a link is clicked
+                navItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                    });
+                });
+            };
+
+            /* 3. TYPING EFFECT (Hero Section) */
+            const setupTyping = () => {
+                const words = ["Nur Fatima Damia Mohammad Yazis.", "A Graphic Designer.", "A UI/UX Enthusiast.", "An IT Graduate."];
+                let wordIdx = 0, charIdx = 0, isDeleting = false;
+                const typingEl = document.getElementById('typing-text');
+
+                function type() {
+                    const currentWord = words[wordIdx];
+                    
+                    if (isDeleting) {
+                        typingEl.innerText = currentWord.substring(0, charIdx - 1);
+                        charIdx--;
+                    } else {
+                        typingEl.innerText = currentWord.substring(0, charIdx + 1);
+                        charIdx++;
+                    }
+
+                    let speed = isDeleting ? 40 : 100;
+
+                    if (!isDeleting && charIdx === currentWord.length) {
+                        speed = 2000; // Pause at end of word
+                        isDeleting = true;
+                    } else if (isDeleting && charIdx === 0) {
+                        isDeleting = false;
+                        wordIdx = (wordIdx + 1) % words.length;
+                        speed = 500; // Pause before new word
+                    }
+
+                    setTimeout(type, speed);
+                }
+                type();
+            };
+
+            /* 4. PORTFOLIO FILTERING */
+            const setupFilters = () => {
+                const btns = document.querySelectorAll('.filter-btn');
+                const cards = document.querySelectorAll('.project-card');
+
+                btns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        // Update active button styling
+                        btns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const filter = btn.getAttribute('data-filter');
+
+                        // Show/Hide cards based on data-category
+                        cards.forEach(card => {
+                            if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                                card.style.display = 'block';
+                                setTimeout(() => card.style.opacity = '1', 50);
+                            } else {
+                                card.style.opacity = '0';
+                                setTimeout(() => card.style.display = 'none', 300);
+                            }
+                        });
+                    });
+                });
+            };
+
+            /* 5. SCROLL SPY (Updates active link in nav based on scroll position) */
+            const setupScrollSpy = () => {
+                const sections = document.querySelectorAll('section');
+                const navLinks = document.querySelectorAll('.nav-link');
+
+                window.addEventListener('scroll', () => {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        // If we scrolled past the section (minus a header buffer)
+                        if (pageYOffset >= sectionTop - 150) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${current}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                });
+            };
+
+            /* 6. SCROLL REVEAL ANIMATIONS (Fades elements in as you scroll) */
+            const setupReveal = () => {
+                const reveals = document.querySelectorAll('.reveal');
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                            observer.unobserve(entry.target); // Only animate once
+                        }
+                    });
+                }, { threshold: 0.1 }); // Trigger when 10% visible
+
+                reveals.forEach(reveal => observer.observe(reveal));
+            };
+
+            /* 7. FRONT-END FORM VALIDATION */
+            const setupForm = () => {
+                const form = document.getElementById('inquiry-form');
+                const msgBox = document.getElementById('form-msg');
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault(); // Stop page reload
+
+                    const name = document.getElementById('name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const msg = document.getElementById('message').value.trim();
+
+                    // Simple validation logic
+                    if (!name || !email || !msg) {
+                        msgBox.textContent = "Please complete all fields.";
+                        msgBox.style.display = "block";
+                        msgBox.style.backgroundColor = "var(--color-dusty-pink)";
+                        msgBox.style.color = "var(--color-burgundy)";
+                        return;
+                    }
+
+                    if (!email.includes('@') || !email.includes('.')) {
+                        msgBox.textContent = "Please enter a valid email.";
+                        msgBox.style.display = "block";
+                        return;
+                    }
+
+                    // Success Simulation
+                    msgBox.textContent = "Inquiry sent successfully! I will be in touch.";
+                    msgBox.style.display = "block";
+                    msgBox.style.backgroundColor = "var(--color-sand)";
+                    
+                    form.reset(); // Clear inputs
+                    
+                    // Hide message after 4 seconds
+                    setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
+                });
+            };
+
+            /* 8. BACK TO TOP BUTTON */
+            const setupBackToTop = () => {
+                const btn = document.getElementById('back-to-top');
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 400) {
+                        btn.classList.add('show');
+                    } else {
+                        btn.classList.remove('show');
+                    }
+                });
+            };
+
+            /* 9. DYNAMIC FOOTER YEAR */
+            const setupYear = () => {
+                document.getElementById('year').textContent = new Date().getFullYear();
+            };
+
+            /* 10. SMOOTH SCROLL OFFSET FOR FIXED HEADER */
+            const setupSmoothScroll = () => {
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        if(targetId === '#') return;
+                        
+                        const targetElement = document.querySelector(targetId);
+                        const headerOffset = 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    });
+                });
+            };
+
+            // Initialize all 10 features
+            setupTheme();
+            setupMobileMenu();
+            setupTyping();
+            setupFilters();
+            setupScrollSpy();
+            setupReveal();
+            setupForm();
+            setupBackToTop();
+            setupYear();
+            setupSmoothScroll();
+
+        });
+    </script>
+</body>
+</html>
