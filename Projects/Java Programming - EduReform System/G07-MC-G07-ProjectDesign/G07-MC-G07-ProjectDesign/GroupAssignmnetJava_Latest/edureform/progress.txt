@@ -1,0 +1,8 @@
+Last Active: 2026-06-04
+Points: 180
+Level: 2
+Streak: 20
+Badges:
+SPEED_DEMON,⚡ Speed Demon,speed_demon.png
+STRONG_STREAK,🔥 Strong Streak,strong_streak.png
+PERFECT_SCORE,🎯 Perfect Score,perfect_score.png
